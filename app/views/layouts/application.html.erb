@@ -21,12 +21,13 @@
     </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="<%= posts_path %>">Posts</a>
+              <li class="nav-item <%= 'active' if current_page?(root_path) || current_page?(posts_path) %>">
+                <a class="nav-link"  href="<%= root_path %>">All posts</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Contact</a>
-              </li>
+              <% Category.order(:name).roots.each do |category| %>
+                <li class="nav-item <%= 'active' if current_page?(category_path(category)) %>"><%= link_to category.name, category, class: 'nav-link' %>
+                 </li>
+              <% end %>
             </ul> 
             <%= link_to 'New post', new_post_path, class: "btn btn-outline-dark pull-xs-right" %> 
           </div>
@@ -50,9 +51,14 @@
           <%= yield %>
         </div> 
         <div class="col-md-3">
-          <% tag_cloud(Tag.counts, %w{tag1 tag2 tag3 tag4 tag5}) do |tag, css_class| %>
-            <%= link_to tag.name, tag_path(tag.name), class: css_class %>
-          <% end %>  
+          <%= render 'shared/submenu' %>
+
+          <div class="tag_cloud">
+            <h2>Tags</h2>
+            <% tag_cloud(Tag.counts, %w{tag1 tag2 tag3 tag4 tag5}) do |tag, css_class| %>
+              <%= link_to tag.name, tag_path(tag.name), class: css_class %>
+            <% end %>
+          </div>  
         </div>
       </div>   
 

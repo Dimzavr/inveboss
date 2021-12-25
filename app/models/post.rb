@@ -1,8 +1,10 @@
 class Post < ApplicationRecord
 	mount_uploader :image, ImageUploader
 	has_rich_text  :content
-	has_many :taggings
+	has_many :taggings, dependent: :destroy
 	has_many :tags, through: :taggings
+  belongs_to :category
+  
 	validates :title, :summary, presence: true
 
     def all_tags
